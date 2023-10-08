@@ -227,9 +227,24 @@ public class UserServiceImpl implements UserService {
 
         recipientAccount.setAccountBalance(recipientAccount.getAccountBalance().add(transferRequest.getTransferredAmount()));
         userRepository.save(recipientAccount);
+        EmailDetails recipientEmailDetails = EmailDetails.builder()
+                .subject("ENQUIRY ALERT!")
+                .recipient(recipientAccount.getEmail())
+                .messageBody("Your received " + transferRequest.getTransferredAmount() + " from Mr " + sourceAccount.getLastName() + " " + sourceAccount.getLastName() )
+                .build();
+
+        emailService.sendEmailAlert(recipientEmailDetails);
 
         sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferRequest.getTransferredAmount()));
         userRepository.save(sourceAccount);
+        EmailDetails sourceEmailDetails = EmailDetails.builder()
+                .subject("DEBIT ALERT!")
+                .recipient(recipientAccount.getEmail())
+                .messageBody("The amount " + transferRequest.getTransferredAmount() + " have been sent from your account to Mr " + recipientAccount.getLastName() + " " + recipientAccount.getLastName() )
+                .build();
+
+        emailService.sendEmailAlert(sourceEmailDetails);
+
 
         return BankResponse.builder()
                 .responseCode(AccountUtils.SUCCESSFUL_TRANSFER_OPERATION_CODE)
