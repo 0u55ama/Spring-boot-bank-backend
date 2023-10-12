@@ -258,7 +258,7 @@ public class UserServiceImpl implements UserService {
         //save a debit transaction
         TransactionDto transactionDtoRecipient = TransactionDto.builder()
                 .accountNumber(recipientAccount.getAccountNumber())
-                .transactionType("TRANSFER : You made a transfer")
+                .transactionType("TRANSFER : You received a transfer")
                 .amount(transferRequest.getTransferredAmount())
                 .build();
         transactionService.saveTransaction(transactionDtoRecipient);
@@ -276,7 +276,7 @@ public class UserServiceImpl implements UserService {
         //save a debit transaction
         TransactionDto transactionDtoSource = TransactionDto.builder()
                 .accountNumber(sourceAccount.getAccountNumber())
-                .transactionType("TRANSFER : You received a transfer")
+                .transactionType("TRANSFER : You made a transfer")
                 .amount(transferRequest.getTransferredAmount())
                 .build();
         transactionService.saveTransaction(transactionDtoSource);
