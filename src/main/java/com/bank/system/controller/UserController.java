@@ -27,6 +27,11 @@ public class UserController {
     public BankResponse createAccount(@RequestBody UserRequest request){
         return userService.createAccount(request);
     }
+
+    @PostMapping("/login")
+    public BankResponse login(@RequestBody LoginDto loginDto){
+        return userService.login(loginDto);
+    }
     @Operation(
             summary = "Balance Enquiry",
             description = "Given an account number, check how much money on you account"

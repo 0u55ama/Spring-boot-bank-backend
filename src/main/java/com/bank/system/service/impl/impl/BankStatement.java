@@ -1,6 +1,7 @@
 package com.bank.system.service.impl.impl;
 
 
+import com.bank.system.dto.EmailDetails;
 import com.bank.system.entity.Transaction;
 import com.bank.system.entity.User;
 import com.bank.system.repository.TransactionRepository;
@@ -13,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,6 +35,7 @@ public class BankStatement {
     @Autowired
     private TransactionRepository transactionRepository;
     private UserRepository userRepository;
+    private EmailServiceImpl emailService;
     private static final String FILE = "C:\\Users\\LENO\\Documents\\BankStatement.pdf";
 
     public List<Transaction> generateStatement(String accountNumber, String startDate, String endDate)
@@ -130,9 +131,16 @@ public class BankStatement {
         document.add(statementInfo);
         document.add(transactionsTable);
 
-
-
         document.close();
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(user.getEmail())
+                .subject("STATEMENT OF ACCOUNT TRANSACTIONS")
+                .messageBody("Kindly find your requested account statement attached")
+                .attachment(FILE)
+                .build();
+
+        emailService.sendEmailWithAttachment(emailDetails);
 
 
         return transactionList;
